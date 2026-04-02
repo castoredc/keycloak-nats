@@ -17,17 +17,20 @@ public class Configuration {
     private final String url;
     private final int jetStreamAdminSize;
     private final int jetStreamClientSize;
+    private final boolean jetStreamManageStreams; 
 
     private Configuration(
             final boolean useJetStream,
             final String url,
             final int jetStreamAdminSize,
-            final int jetStreamClientSize
+            final int jetStreamClientSize,
+            final boolean jetStreamManageStreams
     ) {
         this.useJetStream = useJetStream;
         this.url = url;
         this.jetStreamAdminSize = jetStreamAdminSize;
         this.jetStreamClientSize = jetStreamClientSize;
+        this.jetStreamManageStreams = jetStreamManageStreams;
     }
 
     /**
@@ -40,17 +43,23 @@ public class Configuration {
         final String url = Optional.ofNullable(System.getenv("KEYCLOAK_NATS_URL")).orElse(Options.DEFAULT_URL);
         final int jetStreamAdminSize = Integer.parseInt(Optional.ofNullable(System.getenv("JETSTREAM_ADMIN_SIZE")).orElse("1"));
         final int jetStreamClientSize = Integer.parseInt(Optional.ofNullable(System.getenv("JETSTREAM_CLIENT_SIZE")).orElse("1"));
+        final boolean jetStreamManageStreams = !"false".equalsIgnoreCase(System.getenv("KEYCLOAK_NATS_JETSTREAM_MANAGE_STREAMS"));
 
         return new Configuration(
                 useJetStream,
                 url,
                 jetStreamAdminSize,
-                jetStreamClientSize
+                jetStreamClientSize,
+                jetStreamManageStreams
         );
     }
 
     public boolean useJetStream() {
         return this.useJetStream;
+    }
+
+    public boolean jetStreamManageStreams() {
+        return this.jetStreamManageStreams;
     }
 
     public String getUrl() {
