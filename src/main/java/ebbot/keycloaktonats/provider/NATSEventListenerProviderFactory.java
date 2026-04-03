@@ -1,6 +1,8 @@
 package ebbot.keycloaktonats.provider;
 
 import io.nats.client.*;
+
+import java.io.IOException;
 import io.nats.client.api.StreamConfiguration;
 import ebbot.keycloaktonats.config.Configuration;
 import org.keycloak.Config;
@@ -11,7 +13,6 @@ import org.keycloak.models.KeycloakSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 
 class NatsConnectionListener implements ConnectionListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(NatsConnectionListener.class);
@@ -30,11 +31,16 @@ public class NATSEventListenerProviderFactory implements EventListenerProviderFa
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NATSEventListenerProviderFactory.class);
 
-    private EventListenerProvider listener;
+    private Connection natsConnection;
+    private JetStream jetStream;
+    private boolean initialized = false;
 
     @Override
     public EventListenerProvider create(final KeycloakSession session) {
-        return this.listener;
+        if (!this.initialized) {
+            return new NOOPEventListenerProvider();
+        }
+        return new NATSEnrichedEventListenerProvider(this.jetStream, this.natsConnection, session);
     }
 
     @Override
@@ -59,15 +65,17 @@ public class NATSEventListenerProviderFactory implements EventListenerProviderFa
                     buildClientEventStream(natsConnection, config);
                 }
 
-                this.listener = new NATSEventListenerProvider(natsConnection.jetStream(), natsConnection);
+                this.jetStream = natsConnection.jetStream();
             } else {
                 // Use classic connection
-                this.listener = new NATSEventListenerProvider(null, natsConnection);
+                this.jetStream = null;
             }
+
+            this.natsConnection = natsConnection;
+            this.initialized = true;
 
         } catch (final IOException | InterruptedException | JetStreamApiException exception) {
             LOGGER.error("could not open NATS connection", exception);
-            this.listener = new NOOPEventListenerProvider();
         }
     }
 
@@ -77,13 +85,12 @@ public class NATSEventListenerProviderFactory implements EventListenerProviderFa
 
     @Override
     public void close() {
-        // Close the NATS connection of the NATS event adapter
-        if (!(this.listener instanceof NATSEventListenerProvider)) {
+        if (this.natsConnection == null) {
             return;
         }
         try {
-            ((NATSEventListenerProvider) this.listener).closeConnection();
-        } catch (final IOException | InterruptedException exception) {
+            this.natsConnection.close();
+        } catch (final InterruptedException exception) {
             LOGGER.error("could not close NATS connection", exception);
         }
     }

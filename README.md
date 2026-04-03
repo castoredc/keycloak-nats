@@ -7,6 +7,10 @@ A Keycloak event listener which publishes events to NATS or NATS Streaming (STAN
 The layout of this project is inspired
 by [aznamier/keycloak-event-listener-rabbitmq](https://github.com/aznamier/keycloak-event-listener-rabbitmq).
 
+## Requirements
+
+**JDK 21** is required to build the project locally. This matches the Java version used in the Docker image (`openjdk:21-slim`) and is what Gradle will use from your `PATH` when running `./gradlew shadowJar`.
+
 ## Installation
 
 1. Download the source code (for example via Git)
