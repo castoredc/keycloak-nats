@@ -25,6 +25,7 @@ decided not to use it because we don't live in the stone age anymore.
 | Environment Variable      | Data Type | Description                                                        | Default Value           |
 |---------------------------|-----------|--------------------------------------------------------------------|-------------------------|
 | `KEYCLOAK_NATS_JETSTREAM` | boolean   | Whether or not to use NATS JetStream; plain NATS is used otherwise | `false`                 |
+| `KEYCLOAK_NATS_JETSTREAM_MKEYCLOAK_NATS_JETSTREAM_MANAGE_STREAMS` | boolean   | Whether or not to let the plugin create and manage streams | `true`                 |
 | `KEYCLOAK_NATS_URL`       | string    | The NATS URL to connect to; may contain authentication details     | `nats://localhost:4222` |
 | `JETSTREAM_ADMIN_SIZE`    | string    | Admin stream size when JetStream is used                           | `1 MB`                  |
 | `JETSTREAM_CLIENT_SIZE`   | string    | Client stream size when JetStream is used                          | `1 MB`                  |
