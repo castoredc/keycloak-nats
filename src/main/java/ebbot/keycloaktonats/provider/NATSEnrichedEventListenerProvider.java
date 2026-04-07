@@ -115,6 +115,7 @@ class NATSEnrichedEventListenerProvider implements EventListenerProvider {
                 userMap.put("emailVerified", user.isEmailVerified());
                 userMap.put("enabled", user.isEnabled());
                 userMap.put("attributes", user.getAttributes());
+                userMap.put("createdTimestamp", user.getCreatedTimestamp());
 
                 node.put("representation", this.objectMapper.writeValueAsString(userMap));
             }
