@@ -18,7 +18,7 @@ public class Configuration {
     private final int jetStreamAdminSize;
     private final int jetStreamClientSize;
     private final boolean jetStreamManageStreams;
-    private final Optional<String> nkeySeed;
+    private final String nkeySeed;
 
     private Configuration(
             final boolean useJetStream,
@@ -26,7 +26,7 @@ public class Configuration {
             final int jetStreamAdminSize,
             final int jetStreamClientSize,
             final boolean jetStreamManageStreams,
-            final Optional<String> nkeySeed
+            final String nkeySeed
     ) {
         this.useJetStream = useJetStream;
         this.url = url;
@@ -47,7 +47,7 @@ public class Configuration {
         final int jetStreamAdminSize = Integer.parseInt(Optional.ofNullable(System.getenv("JETSTREAM_ADMIN_SIZE")).orElse("1"));
         final int jetStreamClientSize = Integer.parseInt(Optional.ofNullable(System.getenv("JETSTREAM_CLIENT_SIZE")).orElse("1"));
         final boolean jetStreamManageStreams = !"false".equalsIgnoreCase(System.getenv("KEYCLOAK_NATS_JETSTREAM_MANAGE_STREAMS"));
-        final Optional<String> nkeySeed = Optional.ofNullable(System.getenv("KEYCLOAK_NATS_NKEY_SEED"));
+        final String nkeySeed = System.getenv("KEYCLOAK_NATS_NKEY_SEED");
 
         return new Configuration(
                 useJetStream,
@@ -80,6 +80,6 @@ public class Configuration {
     }
 
     public Optional<String> getNkeySeed() {
-        return nkeySeed;
+        return Optional.ofNullable(nkeySeed);
     }
 }
