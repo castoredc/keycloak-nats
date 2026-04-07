@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Extends the NATS event listener with user enrichment for client events.
+ * NATS event listener with user data enrichment for client events.
  * Client events are augmented with a user representation fetched from the Keycloak session.
  * Admin events are published as-is.
  */

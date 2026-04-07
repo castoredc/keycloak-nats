@@ -34,13 +34,17 @@ public class NATSEventListenerProviderFactory implements EventListenerProviderFa
     private Connection natsConnection;
     private JetStream jetStream;
     private boolean initialized = false;
+    private boolean sendEnrichedClientEvents = false;
 
     @Override
     public EventListenerProvider create(final KeycloakSession session) {
         if (!this.initialized) {
             return new NOOPEventListenerProvider();
         }
-        return new NATSEnrichedEventListenerProvider(this.jetStream, this.natsConnection, session);
+        if (this.sendEnrichedClientEvents) {
+            return new NATSEnrichedEventListenerProvider(this.jetStream, this.natsConnection, session);
+        }
+        return new NATSEventListenerProvider(this.jetStream, this.natsConnection);
     }
 
     @Override
@@ -72,6 +76,7 @@ public class NATSEventListenerProviderFactory implements EventListenerProviderFa
             }
 
             this.natsConnection = natsConnection;
+            this.sendEnrichedClientEvents = config.sendEnrichedClientEvents();
             this.initialized = true;
 
         } catch (final IOException | InterruptedException | JetStreamApiException exception) {
