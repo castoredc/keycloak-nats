@@ -32,6 +32,7 @@ decided not to use it because we don't live in the stone age anymore.
 | `KEYCLOAK_NATS_JETSTREAM_MANAGE_STREAMS` | boolean   | Whether or not to let the plugin create and manage streams                  | `true`                  |
 | `KEYCLOAK_NATS_URL`                      | string    | The NATS URL to connect to; may contain authentication details              | `nats://localhost:4222` |
 | `KEYCLOAK_NATS_NKEY_SEED`                | string    | NKey seed for authentication (optional); when omitted, no NKey auth is used |                         |
+| `KEYCLOAK_NATS_ENRICHED_EVENTS` | boolean | Whether or not to include enriched session data in client events                       | `false`                 |
 | `JETSTREAM_ADMIN_SIZE`                   | string    | Admin stream size when JetStream is used                                    | `1 MB`                  |
 | `JETSTREAM_CLIENT_SIZE`                  | string    | Client stream size when JetStream is used                                   | `1 MB`                  |
 
