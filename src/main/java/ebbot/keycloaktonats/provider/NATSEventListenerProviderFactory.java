@@ -43,10 +43,13 @@ public class NATSEventListenerProviderFactory implements EventListenerProviderFa
         final Configuration config = Configuration.loadFromEnv();
 
         try {
-            Options options = new Options.Builder()
-            .server(config.getUrl())
-                .connectionListener(new NatsConnectionListener())
-            .build();
+            Options.Builder optionsBuilder = new Options.Builder()
+                .server(config.getUrl())
+                .connectionListener(new NatsConnectionListener());
+
+            config.getNkeySeed().ifPresent(seed -> optionsBuilder.authHandler(new NKeyAuthHandler(seed)));
+
+            Options options = optionsBuilder.build();
             Connection natsConnection = Nats.connect(options);
 
             if (config.useJetStream()) {
