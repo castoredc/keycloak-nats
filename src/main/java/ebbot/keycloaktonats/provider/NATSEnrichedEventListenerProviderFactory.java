@@ -58,9 +58,4 @@ public class NATSEnrichedEventListenerProviderFactory extends NATSEventListenerP
         }
         return this.listener;
     }
-
-    @Override
-    public String getId() {
-        return "keycloak-nats-adapter";
-    }
 }
