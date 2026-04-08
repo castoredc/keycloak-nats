@@ -54,8 +54,10 @@ public class NATSEventListenerProviderFactory implements EventListenerProviderFa
 
             if (config.useJetStream()) {
                 // Use JetStream connection
-                buildAdminEventStream(natsConnection, config);
-                buildClientEventStream(natsConnection, config);
+                if (config.jetStreamManageStreams()) {
+                    buildAdminEventStream(natsConnection, config);
+                    buildClientEventStream(natsConnection, config);
+                }
 
                 this.listener = new NATSEventListenerProvider(natsConnection.jetStream(), natsConnection);
             } else {

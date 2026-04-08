@@ -28,15 +28,21 @@ public class NATSEnrichedEventListenerProviderFactory extends NATSEventListenerP
         this.sendEnrichedClientEvents = config.sendEnrichedClientEvents();
 
         try {
-            Options options = new Options.Builder()
+            Options.Builder optionsBuilder = new Options.Builder()
                 .server(config.getUrl())
-                .connectionListener(new NatsConnectionListener())
-                .build();
-            this.natsConnection = Nats.connect(options);
+                .connectionListener(new NatsConnectionListener());
+
+            config.getNkeySeed().ifPresent(seed -> optionsBuilder.authHandler(new NKeyAuthHandler(seed)));
+
+            this.natsConnection = Nats.connect(optionsBuilder.build());
 
             if (config.useJetStream()) {
-                buildAdminEventStream(this.natsConnection, config);
-                buildClientEventStream(this.natsConnection, config);
+                // Use JetStream connection
+                if (config.jetStreamManageStreams()) {
+                    buildAdminEventStream(this.natsConnection, config);
+                    buildClientEventStream(this.natsConnection, config);
+                }
+
                 this.jetStream = this.natsConnection.jetStream();
             }
 
@@ -50,12 +56,10 @@ public class NATSEnrichedEventListenerProviderFactory extends NATSEventListenerP
 
     @Override
     public EventListenerProvider create(final KeycloakSession session) {
-        if (!(this.listener instanceof NATSEventListenerProvider)) {
-            return new NOOPEventListenerProvider();
-        }
         if (this.sendEnrichedClientEvents) {
             return new NATSEnrichedEventListenerProvider(this.jetStream, this.natsConnection, session);
         }
-        return this.listener;
+
+        return super.create(session);
     }
 }

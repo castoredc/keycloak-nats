@@ -37,6 +37,16 @@ class NATSEventListenerProviderFactoryTest {
     }
 
     @Test
+    void enrichedFactory_noNatsSeed_initFails_returnsNoop() {
+        NATSEnrichedEventListenerProviderFactory factory = new NATSEnrichedEventListenerProviderFactory();
+        // No NATS server available — init() should fall back to NOOP
+        factory.init(null);
+
+        EventListenerProvider provider = factory.create(mock(KeycloakSession.class));
+        assertInstanceOf(NOOPEventListenerProvider.class, provider);
+    }
+
+    @Test
     void enrichedFactory_listenerNoop_returnsNoop() {
         NATSEnrichedEventListenerProviderFactory factory = new NATSEnrichedEventListenerProviderFactory();
         factory.listener = new NOOPEventListenerProvider();
