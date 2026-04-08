@@ -1,1 +1,1 @@
-ebbot.keycloaktonats.provider.NATSEventListenerProviderFactory
+ebbot.keycloaktonats.provider.NATSEnrichedEventListenerProviderFactory
