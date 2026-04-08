@@ -27,7 +27,7 @@ public class Configuration {
             final int jetStreamAdminSize,
             final int jetStreamClientSize,
             final boolean jetStreamManageStreams,
-            final String nkeySeed
+            final String nkeySeed,
             final boolean sendEnrichedClientEvents
     ) {
         this.useJetStream = useJetStream;
@@ -59,7 +59,7 @@ public class Configuration {
                 jetStreamAdminSize,
                 jetStreamClientSize,
                 jetStreamManageStreams,
-                nkeySeed
+                nkeySeed,
                 sendEnrichedClientEvents
         );
     }
