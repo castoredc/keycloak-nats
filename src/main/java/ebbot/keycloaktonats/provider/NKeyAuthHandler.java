@@ -6,7 +6,7 @@ import io.nats.client.NKey;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-class NKeyAuthHandler implements AuthHandler {
+final class NKeyAuthHandler implements AuthHandler {
 
     private final NKey nkey;
 
@@ -14,7 +14,7 @@ class NKeyAuthHandler implements AuthHandler {
         try {
             this.nkey = NKey.fromSeed(seed.toCharArray());
         } catch (Exception e) {
-            throw new RuntimeException("Invalid KEYCLOAK_NATS_NKEY_SEED", e);
+            throw new RuntimeException("Invalid NKey seed", e);
         }
     }
 
