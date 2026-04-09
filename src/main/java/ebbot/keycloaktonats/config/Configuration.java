@@ -19,6 +19,7 @@ public class Configuration {
     private final int jetStreamClientSize;
     private final boolean jetStreamManageStreams;
     private final String nkeySeed;
+    private final boolean sendEnrichedClientEvents;
 
     private Configuration(
             final boolean useJetStream,
@@ -26,7 +27,8 @@ public class Configuration {
             final int jetStreamAdminSize,
             final int jetStreamClientSize,
             final boolean jetStreamManageStreams,
-            final String nkeySeed
+            final String nkeySeed,
+            final boolean sendEnrichedClientEvents
     ) {
         this.useJetStream = useJetStream;
         this.url = url;
@@ -34,6 +36,7 @@ public class Configuration {
         this.jetStreamClientSize = jetStreamClientSize;
         this.jetStreamManageStreams = jetStreamManageStreams;
         this.nkeySeed = nkeySeed;
+        this.sendEnrichedClientEvents = sendEnrichedClientEvents;
     }
 
     /**
@@ -48,6 +51,7 @@ public class Configuration {
         final int jetStreamClientSize = Integer.parseInt(Optional.ofNullable(System.getenv("JETSTREAM_CLIENT_SIZE")).orElse("1"));
         final boolean jetStreamManageStreams = !"false".equalsIgnoreCase(System.getenv("KEYCLOAK_NATS_JETSTREAM_MANAGE_STREAMS"));
         final String nkeySeed = System.getenv("KEYCLOAK_NATS_NKEY_SEED");
+        final boolean sendEnrichedClientEvents = "true".equalsIgnoreCase(System.getenv("KEYCLOAK_NATS_ENRICHED_EVENTS"));
 
         return new Configuration(
                 useJetStream,
@@ -55,12 +59,17 @@ public class Configuration {
                 jetStreamAdminSize,
                 jetStreamClientSize,
                 jetStreamManageStreams,
-                nkeySeed
+                nkeySeed,
+                sendEnrichedClientEvents
         );
     }
 
     public boolean useJetStream() {
         return this.useJetStream;
+    }
+
+    public boolean sendEnrichedClientEvents() {
+        return this.sendEnrichedClientEvents;
     }
 
     public boolean jetStreamManageStreams() {

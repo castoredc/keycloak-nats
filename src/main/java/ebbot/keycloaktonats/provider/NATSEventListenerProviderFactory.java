@@ -30,7 +30,7 @@ public class NATSEventListenerProviderFactory implements EventListenerProviderFa
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NATSEventListenerProviderFactory.class);
 
-    private EventListenerProvider listener;
+    protected EventListenerProvider listener;
 
     @Override
     public EventListenerProvider create(final KeycloakSession session) {
@@ -93,7 +93,7 @@ public class NATSEventListenerProviderFactory implements EventListenerProviderFa
         return "keycloak-nats-adapter";
     }
 
-    private void buildAdminEventStream(Connection natsConnection, Configuration config) throws IOException, JetStreamApiException {
+    protected void buildAdminEventStream(Connection natsConnection, Configuration config) throws IOException, JetStreamApiException {
         final String streamName = "keycloak-admin-event-stream";
         JetStream jetStream = natsConnection.jetStream();
         StreamConfiguration streamConfiguration = StreamConfiguration.builder()
@@ -110,7 +110,7 @@ public class NATSEventListenerProviderFactory implements EventListenerProviderFa
         }
     }
 
-    private void buildClientEventStream(Connection natsConnection, Configuration config) throws IOException, JetStreamApiException {
+    protected void buildClientEventStream(Connection natsConnection, Configuration config) throws IOException, JetStreamApiException {
         final String streamName = "keycloak-client-event-stream";
         JetStream jetStream = natsConnection.jetStream();
         StreamConfiguration streamConfiguration = StreamConfiguration.builder()

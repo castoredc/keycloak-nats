@@ -7,6 +7,10 @@ A Keycloak event listener which publishes events to NATS or NATS Streaming (STAN
 The layout of this project is inspired
 by [aznamier/keycloak-event-listener-rabbitmq](https://github.com/aznamier/keycloak-event-listener-rabbitmq).
 
+## Requirements
+
+**JDK 21** is required to build the project locally. This matches the Java version used in the Docker image (`openjdk:21-slim`) and is what Gradle will use from your `PATH` when running `./gradlew shadowJar`.
+
 ## Installation
 
 1. Download the source code (for example via Git)
@@ -28,6 +32,7 @@ decided not to use it because we don't live in the stone age anymore.
 | `KEYCLOAK_NATS_JETSTREAM_MANAGE_STREAMS` | boolean   | Whether or not to let the plugin create and manage streams                  | `true`                  |
 | `KEYCLOAK_NATS_URL`                      | string    | The NATS URL to connect to; may contain authentication details              | `nats://localhost:4222` |
 | `KEYCLOAK_NATS_NKEY_SEED`                | string    | NKey seed for authentication (optional); when omitted, no NKey auth is used |                         |
+| `KEYCLOAK_NATS_ENRICHED_EVENTS` | boolean | Whether or not to include enriched session data in client events                       | `false`                 |
 | `JETSTREAM_ADMIN_SIZE`                   | string    | Admin stream size when JetStream is used                                    | `1 MB`                  |
 | `JETSTREAM_CLIENT_SIZE`                  | string    | Client stream size when JetStream is used                                   | `1 MB`                  |
 

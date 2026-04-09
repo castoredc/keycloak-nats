@@ -26,7 +26,7 @@ public class NATSEventListenerProvider implements EventListenerProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NATSEventListenerProvider.class);
 
-    private final ObjectMapper objectMapper;
+    protected final ObjectMapper objectMapper;
     private final JetStream jetStream;
     private final Connection natsConnection;
 
@@ -56,7 +56,7 @@ public class NATSEventListenerProvider implements EventListenerProvider {
         // To close the connection we use NATSEventListenerProvider#closeConnection instead
     }
 
-    private void send(final String key, final String value) {
+    protected void send(final String key, final String value) {
         if (this.jetStream != null) {
             try {
                 PublishAck ack = this.jetStream.publish(key, value.getBytes(StandardCharsets.UTF_8));
@@ -75,7 +75,7 @@ public class NATSEventListenerProvider implements EventListenerProvider {
         }
     }
 
-    private String serialize(final Object object) {
+    protected String serialize(final Object object) {
         try {
             return this.objectMapper.writeValueAsString(object);
         } catch (final JsonProcessingException exception) {
@@ -84,7 +84,7 @@ public class NATSEventListenerProvider implements EventListenerProvider {
         }
     }
 
-    private String buildKey(final Event event) {
+    protected String buildKey(final Event event) {
         // keycloak.event.client.<realm>.<result>.<clientId>.<type>
         return this.normalizeKey(String.format(
                 "keycloak.event.client.%s.%s.%s.%s",
