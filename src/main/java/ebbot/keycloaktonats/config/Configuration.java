@@ -91,4 +91,8 @@ public class Configuration {
     public Optional<String> getNkeySeed() {
         return Optional.ofNullable(nkeySeed);
     }
+
+    public boolean useTls() {
+        return this.url.startsWith("tls://");
+    }
 }

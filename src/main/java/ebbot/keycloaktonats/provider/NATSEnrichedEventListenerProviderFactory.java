@@ -5,7 +5,6 @@ import io.nats.client.Connection;
 import io.nats.client.JetStream;
 import io.nats.client.JetStreamApiException;
 import io.nats.client.Nats;
-import io.nats.client.Options;
 import org.keycloak.Config;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.models.KeycloakSession;
@@ -28,13 +27,7 @@ public class NATSEnrichedEventListenerProviderFactory extends NATSEventListenerP
         this.sendEnrichedClientEvents = config.sendEnrichedClientEvents();
 
         try {
-            Options.Builder optionsBuilder = new Options.Builder()
-                .server(config.getUrl())
-                .connectionListener(new NatsConnectionListener());
-
-            config.getNkeySeed().ifPresent(seed -> optionsBuilder.authHandler(new NKeyAuthHandler(seed)));
-
-            this.natsConnection = Nats.connect(optionsBuilder.build());
+            this.natsConnection = Nats.connect(buildOptionsBuilder(config).build());
 
             if (config.useJetStream()) {
                 // Use JetStream connection
@@ -48,7 +41,7 @@ public class NATSEnrichedEventListenerProviderFactory extends NATSEventListenerP
 
             this.listener = new NATSEventListenerProvider(this.jetStream, this.natsConnection);
 
-        } catch (final IOException | InterruptedException | JetStreamApiException exception) {
+        } catch (final Exception exception) {
             LOGGER.error("could not open NATS connection", exception);
             this.listener = new NOOPEventListenerProvider();
         }
