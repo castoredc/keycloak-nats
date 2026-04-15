@@ -11,6 +11,7 @@ import org.keycloak.models.KeycloakSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 
 class NatsConnectionListener implements ConnectionListener {
@@ -37,19 +38,27 @@ public class NATSEventListenerProviderFactory implements EventListenerProviderFa
         return this.listener;
     }
 
+    protected Options.Builder buildOptionsBuilder(final Configuration config) throws Exception {
+        Options.Builder builder = new Options.Builder()
+            .server(config.getUrl())
+            .connectionListener(new NatsConnectionListener());
+
+        config.getNkeySeed().ifPresent(seed -> builder.authHandler(new NKeyAuthHandler(seed)));
+
+        if (config.useTls()) {
+            builder.sslContext(SSLContext.getDefault());
+        }
+
+        return builder;
+    }
+
     @Override
     public void init(final Config.Scope unusedConfig) {
         // We use our own configuration as I don't want to mess around with XML from two thousand years ago
         final Configuration config = Configuration.loadFromEnv();
 
         try {
-            Options.Builder optionsBuilder = new Options.Builder()
-                .server(config.getUrl())
-                .connectionListener(new NatsConnectionListener());
-
-            config.getNkeySeed().ifPresent(seed -> optionsBuilder.authHandler(new NKeyAuthHandler(seed)));
-
-            Options options = optionsBuilder.build();
+            Options options = buildOptionsBuilder(config).build();
             Connection natsConnection = Nats.connect(options);
 
             if (config.useJetStream()) {
@@ -65,7 +74,7 @@ public class NATSEventListenerProviderFactory implements EventListenerProviderFa
                 this.listener = new NATSEventListenerProvider(null, natsConnection);
             }
 
-        } catch (final IOException | InterruptedException | JetStreamApiException exception) {
+        } catch (final Exception exception) {
             LOGGER.error("could not open NATS connection", exception);
             this.listener = new NOOPEventListenerProvider();
         }
