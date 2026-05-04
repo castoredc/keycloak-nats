@@ -70,7 +70,7 @@ class NATSEnrichedEventListenerProvider extends NATSEventListenerProvider {
 
             return node.toString();
         } catch (final JsonProcessingException exception) {
-            throw new UncheckedIOException("could not serialize enriched event", exception);
+            throw new UncheckedIOException("Could not serialize enriched event", exception);
         }
     }
 
