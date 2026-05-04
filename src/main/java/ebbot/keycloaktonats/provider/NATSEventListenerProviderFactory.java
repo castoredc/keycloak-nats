@@ -108,7 +108,7 @@ public class NATSEventListenerProviderFactory implements EventListenerProviderFa
         StreamConfiguration streamConfiguration = StreamConfiguration.builder()
                 .name(streamName)
                 .subjects("keycloak.event.admin.>")
-                .maxBytes(config.getJetStreamAdminSize() * 1024 * 1024)
+                .maxBytes(config.getJetStreamAdminSize() * 1024L * 1024L)
                 .build();
 
         try {
@@ -125,7 +125,7 @@ public class NATSEventListenerProviderFactory implements EventListenerProviderFa
         StreamConfiguration streamConfiguration = StreamConfiguration.builder()
                 .name(streamName)
                 .subjects("keycloak.event.client.>")
-                .maxBytes(config.getJetStreamClientSize() * 1024 * 1024)
+                .maxBytes(config.getJetStreamClientSize() * 1024L * 1024L)
                 .build();
 
         try {
