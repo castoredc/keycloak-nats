@@ -11,6 +11,7 @@ import org.keycloak.models.UserModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,8 +70,7 @@ class NATSEnrichedEventListenerProvider extends NATSEventListenerProvider {
 
             return node.toString();
         } catch (final JsonProcessingException exception) {
-            LOGGER.error("could not serialize enriched event", exception);
-            return "{}";
+            throw new UncheckedIOException("could not serialize enriched event", exception);
         }
     }
 
