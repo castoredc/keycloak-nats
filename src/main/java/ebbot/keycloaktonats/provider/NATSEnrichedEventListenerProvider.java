@@ -33,6 +33,9 @@ class NATSEnrichedEventListenerProvider extends NATSEventListenerProvider {
 
     @Override
     public void onEvent(final Event event) {
+        if (this.shouldDrop(event)) {
+            return;
+        }
         final String serialized = this.serializeEnriched(event);
         final String key = this.buildKey(event);
         this.send(key, serialized);
