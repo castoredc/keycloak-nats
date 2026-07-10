@@ -8,6 +8,7 @@ import io.nats.client.JetStreamApiException;
 import io.nats.client.api.PublishAck;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
+import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +39,23 @@ public class NATSEventListenerProvider implements EventListenerProvider {
 
     @Override
     public void onEvent(final Event event) {
+        if (this.shouldDrop(event)) {
+            return;
+        }
         final String serialized = this.serialize(event);
         final String key = this.buildKey(event);
         this.send(key, serialized);
+    }
+
+    /**
+     * Whether the event should be dropped instead of published.
+     *
+     * <p>{@code USER_SESSION_DELETED} events are fired in bulk by Keycloak's background task
+     * that expires idle user sessions. They carry no client ID (which the subject requires)
+     * and no downstream consumer needs them.</p>
+     */
+    protected boolean shouldDrop(final Event event) {
+        return event.getType() == EventType.USER_SESSION_DELETED;
     }
 
     @Override

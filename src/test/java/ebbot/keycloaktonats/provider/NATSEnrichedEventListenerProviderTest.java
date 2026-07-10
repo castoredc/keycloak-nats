@@ -27,6 +27,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class NATSEnrichedEventListenerProviderTest {
@@ -66,6 +68,25 @@ class NATSEnrichedEventListenerProviderTest {
 
             assertThrows(UncheckedIOException.class, () -> provider.onEvent(event));
         }
+    }
+
+    @Test
+    void onEvent_userSessionDeletedEvent_isDroppedWithoutPublishing() throws IOException, JetStreamApiException {
+        KeycloakSession session = mock(KeycloakSession.class);
+        JetStream jetStream = mock(JetStream.class);
+
+        // Shaped like the background session-expiration events: no client ID, no IP address
+        Event event = new Event();
+        event.setRealmId("test-realm");
+        event.setUserId("user-id");
+        event.setClientId(null);
+        event.setType(EventType.USER_SESSION_DELETED);
+
+        NATSEnrichedEventListenerProvider provider = new NATSEnrichedEventListenerProvider(
+                jetStream, mock(Connection.class), session);
+
+        assertDoesNotThrow(() -> provider.onEvent(event));
+        verify(jetStream, never()).publish(anyString(), any(byte[].class));
     }
 
     @Test
