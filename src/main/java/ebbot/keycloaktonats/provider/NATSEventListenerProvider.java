@@ -113,7 +113,7 @@ public class NATSEventListenerProvider implements EventListenerProvider {
                 "keycloak.event.client.%s.%s.%s.%s",
                 event.getRealmId().replace(".", ""),
                 event.getError() != null ? "error" : "success",
-                (event.getClientId() != null ? event.getClientId() : UNKNOWN_CLIENT_ID).replace(".", ""),
+                Objects.requireNonNullElse(event.getClientId(), UNKNOWN_CLIENT_ID).replace(".", ""),
                 event.getType().toString().toLowerCase()
         ));
     }
