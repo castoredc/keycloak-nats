@@ -50,6 +50,15 @@ in an uppercase format.
 
 Spaces get replaced with underscores.
 
+### Events without a client ID
+
+Keycloak fires some client events before a client is known, for example an error on an expired auth session or on an
+external identity provider logout. These events are published with `unknown` as the `<clientId>` part (for example
+`keycloak.event.client.master.error.unknown.login_error`).
+
+`USER_SESSION_DELETED` events are not published. Keycloak fires them in bulk when it expires idle user sessions, and
+no consumer needs them.
+
 ## Representation Examples
 
 ### Admin Event
