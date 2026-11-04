@@ -27,6 +27,14 @@ public class NATSEventListenerProvider implements EventListenerProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NATSEventListenerProvider.class);
 
+    /**
+     * Subject token used when a client event has no client ID.
+     *
+     * <p>Keycloak fires some events before a client is known, for example an error on an
+     * expired auth session or on an external identity provider logout.</p>
+     */
+    static final String UNKNOWN_CLIENT_ID = "unknown";
+
     protected final ObjectMapper objectMapper;
     private final JetStream jetStream;
     private final Connection natsConnection;
@@ -105,7 +113,7 @@ public class NATSEventListenerProvider implements EventListenerProvider {
                 "keycloak.event.client.%s.%s.%s.%s",
                 event.getRealmId().replace(".", ""),
                 event.getError() != null ? "error" : "success",
-                event.getClientId().replace(".", ""),
+                (event.getClientId() != null ? event.getClientId() : UNKNOWN_CLIENT_ID).replace(".", ""),
                 event.getType().toString().toLowerCase()
         ));
     }
