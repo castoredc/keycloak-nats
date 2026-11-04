@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.never;
@@ -90,7 +91,22 @@ class NATSEnrichedEventListenerProviderTest {
     }
 
     @Test
-    void onEvent_validEvent_doesNotThrow() throws IOException, JetStreamApiException {
+    void onEvent_nullClientId_publishesWithUnknownClientPlaceholder() throws IOException, JetStreamApiException {
+        JetStream jetStream = mock(JetStream.class);
+        when(jetStream.publish(anyString(), any(byte[].class))).thenReturn(mock(PublishAck.class));
+
+        Event event = NATSEventListenerProviderTest.clientEvent(null, EventType.LOGIN_ERROR, "expired_code");
+
+        NATSEnrichedEventListenerProvider provider = new NATSEnrichedEventListenerProvider(
+                jetStream, mock(Connection.class), null);
+
+        provider.onEvent(event);
+
+        verify(jetStream).publish(eq("keycloak.event.client.test-realm.error.unknown.login_error"), any(byte[].class));
+    }
+
+    @Test
+    void onEvent_validEvent_doesNotThrow()throws IOException, JetStreamApiException {
         KeycloakSession session = mock(KeycloakSession.class);
         RealmProvider realmProvider = mock(RealmProvider.class);
         JetStream jetStream = mock(JetStream.class);
