@@ -9,7 +9,7 @@ by [aznamier/keycloak-event-listener-rabbitmq](https://github.com/aznamier/keycl
 
 ## Requirements
 
-**JDK 21** is required to build the project locally. This matches the Java version used in the Docker image (`openjdk:21-slim`) and is what Gradle will use from your `PATH` when running `./gradlew shadowJar`.
+**JDK 21** is required to build the project locally. This matches the Java version used in the Docker image (`eclipse-temurin:21-jdk`, Eclipse Temurin 21) and is what Gradle will use from your `PATH` when running `./gradlew shadowJar`.
 
 ## Installation
 
